@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -38,8 +39,9 @@ public class Beer {
     @Enumerated
     private BeerStyle beerStyle;
 
-    @Column(unique = true)
-    private Long upc;
+    @Column(unique = true, length = 13, columnDefinition = "varchar")
+    @Pattern(regexp = "([0-9]){13}")
+    private String upc;
 
     private BigDecimal price;
 

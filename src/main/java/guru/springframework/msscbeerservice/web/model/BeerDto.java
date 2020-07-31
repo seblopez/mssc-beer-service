@@ -38,8 +38,8 @@ public class BeerDto {
     private BeerStyleEnum beerStyle;
 
     @NotNull
-    @Positive
-    private Long upc;
+    @Pattern(regexp = "([0-9]){13}")
+    private String upc;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Positive

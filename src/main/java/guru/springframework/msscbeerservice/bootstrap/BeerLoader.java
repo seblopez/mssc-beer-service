@@ -19,6 +19,11 @@ import java.util.List;
 public class BeerLoader implements CommandLineRunner {
 
     final private BeerRepository beerRepository;
+    private static final String BEER_1_UPC = "0631234200036";
+    private static final String BEER_2_UPC = "0631234300019";
+    private static final String BEER_3_UPC = "0083783375213";
+    private static final String BEER_4_UPC = "0083783373456";
+    private static final String BEER_5_UPC = "0083783373489";
 
     @Override
     public void run(String... args) throws Exception {
@@ -32,35 +37,35 @@ public class BeerLoader implements CommandLineRunner {
                             .beerStyle(BeerStyle.IPA)
                             .quantityToBrew(200)
                             .minOnHand(12)
-                            .upc(3370232321L)
+                            .upc(BEER_1_UPC)
                             .price(BigDecimal.valueOf(12.95))
                             .build(),
                     Beer.builder().beerName("Galaxy Cat")
                             .beerStyle(BeerStyle.ALE)
                             .quantityToBrew(200)
                             .minOnHand(12)
-                            .upc(3370232322L)
+                            .upc(BEER_2_UPC)
                             .price(BigDecimal.valueOf(11.95))
                             .build(),
                     Beer.builder().beerName("Andes Rubia")
                             .beerStyle(BeerStyle.HONEY)
                             .quantityToBrew(400)
                             .minOnHand(12)
-                            .upc(3370232323L)
+                            .upc(BEER_3_UPC)
                             .price(BigDecimal.valueOf(14.35))
                             .build(),
                     Beer.builder().beerName("Corona")
                             .beerStyle(BeerStyle.PILSENER)
                             .quantityToBrew(100)
                             .minOnHand(40)
-                            .upc(3370232324L)
+                            .upc(BEER_4_UPC)
                             .price(BigDecimal.valueOf(7.09))
                             .build(),
                     Beer.builder().beerName("Rabieta IPA")
                             .beerStyle(BeerStyle.IPA)
                             .quantityToBrew(300)
                             .minOnHand(20)
-                            .upc(3370232325L)
+                            .upc(BEER_5_UPC)
                             .price(BigDecimal.valueOf(14.95))
                             .build()
             );

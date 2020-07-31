@@ -38,18 +38,16 @@ class BeerControllerTest {
     private BeerDto beerDtoToSave = BeerDto.builder()
             .beerName("Antares")
             .beerStyle(BeerStyleEnum.PILSENER)
-            .upc(12213232L)
+            .upc("0083783375213")
             .price(BigDecimal.valueOf(12.23))
-            .upc(1212323231L)
             .quantityOnHand(20)
             .build();
 
     private BeerDto beerDtoSaved = BeerDto.builder()
             .beerName("Antares")
             .beerStyle(BeerStyleEnum.PILSENER)
-            .upc(12213232L)
+            .upc("0083783375213")
             .price(BigDecimal.valueOf(12.23))
-            .upc(1212323231L)
             .quantityOnHand(20)
             .build();
 
@@ -119,7 +117,7 @@ class BeerControllerTest {
                 .beerName("Antares")
                 .beerStyle(BeerStyleEnum.LAGER)
                 .price(BigDecimal.valueOf(0))
-                .upc(1L)
+                .upc("0083783375213")
                 .quantityOnHand(10)
                 .build());
 
