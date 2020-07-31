@@ -1,4 +1,4 @@
-package guru.springframework.msscbeerservice.repositories;
+package guru.springframework.msscbeerservice.repository;
 
 import guru.springframework.msscbeerservice.domain.Beer;
 import org.springframework.data.repository.PagingAndSortingRepository;
