@@ -1,20 +1,27 @@
 package guru.springframework.msscbeerservice.service;
 
 import guru.springframework.msscbeerservice.domain.Beer;
+import guru.springframework.msscbeerservice.domain.BeerStyle;
 import guru.springframework.msscbeerservice.exception.NotFoundException;
 import guru.springframework.msscbeerservice.repository.BeerRepository;
 import guru.springframework.msscbeerservice.web.mapper.BeerMapper;
 import guru.springframework.msscbeerservice.web.mapper.BeerStyleMapper;
 import guru.springframework.msscbeerservice.web.model.BeerDto;
+import guru.springframework.msscbeerservice.web.model.BeerPagedList;
+import guru.springframework.msscbeerservice.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,9 +33,15 @@ public class BeerServiceImpl implements BeerService {
     private final BeerStyleMapper beerStyleMapper;
 
     @Override
-    public BeerDto getBeerById(UUID id) {
-        return beerMapper.beerToBeerDto(beerRepository.findById(id)
-                .orElseThrow(this.getNotFoundExceptionSupplier(id)));
+    public BeerDto getBeerById(UUID id, Boolean showInventoryOnHand) {
+        final Beer beer = beerRepository.findById(id)
+                .orElseThrow(this.getNotFoundExceptionSupplier(id));
+
+        if(showInventoryOnHand) {
+            return beerMapper.beerToBeerDtoWithInventory(beer);
+        } else {
+            return beerMapper.beerToBeerDto(beer);
+        }
     }
 
 
@@ -49,6 +62,42 @@ public class BeerServiceImpl implements BeerService {
         beerToUpdate.setLastModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
         return beerMapper.beerToBeerDto(beerRepository.save(beerToUpdate));
+    }
+
+    @Override
+    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyleEnum, PageRequest pageRequest, Boolean showInventoryOnHand) {
+        final Page<Beer> beerPage;
+
+        if(!StringUtils.isEmpty(beerName) && !StringUtils.isEmpty(beerStyleEnum)) {
+            final BeerStyle beerStyle = beerStyleMapper.beerStyleEnumToBeerStyle(beerStyleEnum);
+            beerPage = beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle, pageRequest);
+        } else if(!StringUtils.isEmpty(beerName) && StringUtils.isEmpty(beerStyleEnum)) {
+            beerPage = beerRepository.findAllByBeerName(beerName, pageRequest);
+        } else if(StringUtils.isEmpty(beerName) && !StringUtils.isEmpty(beerStyleEnum)) {
+            final BeerStyle beerStyle = beerStyleMapper.beerStyleEnumToBeerStyle(beerStyleEnum);
+            beerPage = beerRepository.findAllByBeerStyle(beerStyle, pageRequest);
+        } else {
+            beerPage = beerRepository.findAll(pageRequest);
+        }
+
+        if(showInventoryOnHand) {
+            return new BeerPagedList(beerPage.getContent()
+                    .stream()
+                    .map(beerMapper::beerToBeerDtoWithInventory)
+                    .collect(Collectors.toList()),
+                    PageRequest.of(beerPage.getPageable().getPageNumber(),
+                            beerPage.getPageable().getPageSize()),
+                    beerPage.getTotalElements());
+        } else {
+            return new BeerPagedList(beerPage.getContent()
+                    .stream()
+                    .map(beerMapper::beerToBeerDto)
+                    .collect(Collectors.toList()),
+                    PageRequest.of(beerPage.getPageable().getPageNumber(),
+                            beerPage.getPageable().getPageSize()),
+                    beerPage.getTotalElements());
+        }
+
     }
 
     private Supplier<NotFoundException> getNotFoundExceptionSupplier(UUID id) {
