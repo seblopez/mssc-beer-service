@@ -108,6 +108,41 @@ class BeerControllerTest {
     }
 
     @Test
+    void getBeerByUpcShowInventoryOk() throws Exception {
+        given(beerService.getBeerByUpc(any(String.class), any(Boolean.class)))
+                .willReturn(beerDtoToSave);
+
+        mockMvc.perform(get("/api/v1/beerUpc/0083783375213?showInventoryOnHand=true")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantityOnHand", equalTo(20)));
+
+
+        verify(beerService).getBeerByUpc(any(String.class), any(Boolean.class));
+
+    }
+
+    @Test
+    void getBeerByUpcNoShowInventoryOk() throws Exception {
+        given(beerService.getBeerByUpc(any(String.class), any(Boolean.class)))
+                .willReturn(BeerDto.builder()
+                        .beerName("Antares")
+                        .beerStyle(BeerStyleEnum.PILSENER)
+                        .upc("0083783375213")
+                        .price(BigDecimal.valueOf(12.23))
+                        .build());
+
+        mockMvc.perform(get("/api/v1/beerUpc/0083783375213")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.quantityOnHand").doesNotExist());
+
+
+        verify(beerService).getBeerByUpc(any(String.class), any(Boolean.class));
+
+    }
+
+    @Test
     void saveNewBeerOk() throws Exception {
         given(beerService.saveNewBeer(any(BeerDto.class)))
                 .willReturn(savedBeerDto);

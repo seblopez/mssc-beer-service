@@ -11,6 +11,8 @@ public interface BeerService {
 
     BeerDto getBeerById(UUID id, Boolean showInventoryOnHand);
 
+    BeerDto getBeerByUpc(String upc, Boolean showInventoryOnHand);
+
     BeerDto saveNewBeer(BeerDto beerDto);
 
     BeerDto updateBeer(UUID id, BeerDto beerDto);
