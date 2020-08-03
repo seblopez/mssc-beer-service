@@ -1,6 +1,7 @@
 package guru.springframework.msscbeerservice.service.inventory;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,10 +11,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-//@Disabled
+@Disabled
 @Slf4j
 @SpringBootTest
-class BeerInventoryServiceRestTemplateImplTest {
+public class BeerInventoryServiceRestTemplateImplIT {
 
     @Autowired
     BeerInventoryService beerInventoryService;
