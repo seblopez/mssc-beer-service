@@ -38,7 +38,7 @@ public class BeerServiceImpl implements BeerService {
     public BeerDto getBeerById(UUID beerId, Boolean showInventoryOnHand) {
         log.info("getBeerId is called");
         final Beer beer = beerRepository.findById(beerId)
-                .orElseThrow(this.getNotFoundExceptionSupplier(beerId));
+                .orElseThrow(this.getNotFoundByIdExceptionSupplier(beerId));
 
         if(showInventoryOnHand) {
             return beerMapper.beerToBeerDtoWithInventory(beer);
@@ -51,11 +51,7 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public BeerDto getBeerByUpc(String upc, Boolean showInventoryOnHand) {
         log.info("getBeerByUpc is called");
-        final Beer beer = beerRepository.findByUpc(upc).orElseThrow(() -> {
-            final String errorMessage = MessageFormat.format("UPC {0} not found", upc);
-            log.error(errorMessage);
-            return new NotFoundException(errorMessage);
-        });
+        final Beer beer = beerRepository.findByUpc(upc).orElseThrow(this.getNotFoundByUpcExceptionSupplier(upc));
 
         if(showInventoryOnHand) {
             return beerMapper.beerToBeerDtoWithInventory(beer);
@@ -65,7 +61,6 @@ public class BeerServiceImpl implements BeerService {
 
     }
 
-
     @Override
     public BeerDto saveNewBeer(BeerDto beerDto) {
         return beerMapper.beerToBeerDto(beerRepository.save(beerMapper.beerDtoToBeer(beerDto)));
@@ -74,14 +69,30 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public BeerDto updateBeer(UUID beerId, BeerDto beerDto) {
         final Beer beerToUpdate = beerRepository.findById(beerId)
-                .orElseThrow(getNotFoundExceptionSupplier(beerId));
+                .orElseThrow(this.getNotFoundByIdExceptionSupplier(beerId));
 
         beerToUpdate.setBeerName(beerDto.getBeerName());
         beerToUpdate.setBeerStyle(beerStyleMapper.beerStyleEnumToBeerStyle(beerDto.getBeerStyle()));
+        beerToUpdate.setPrice(beerDto.getPrice());
         beerToUpdate.setUpc(beerDto.getUpc());
         beerToUpdate.setLastModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
         return beerMapper.beerToBeerDto(beerRepository.save(beerToUpdate));
+    }
+
+    @Override
+    public BeerDto updateBeerByUpc(String upc, BeerDto beerDto) {
+        final Beer beerToUpdate = beerRepository.findByUpc(upc)
+                .orElseThrow(this.getNotFoundByUpcExceptionSupplier(upc));
+
+        beerToUpdate.setBeerName(beerDto.getBeerName());
+        beerToUpdate.setBeerStyle(beerStyleMapper.beerStyleEnumToBeerStyle(beerDto.getBeerStyle()));
+        beerToUpdate.setUpc(beerDto.getUpc());
+        beerToUpdate.setPrice(beerDto.getPrice());
+        beerToUpdate.setLastModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+
+        return beerMapper.beerToBeerDto(beerRepository.save(beerToUpdate));
+
     }
 
     @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false")
@@ -122,9 +133,17 @@ public class BeerServiceImpl implements BeerService {
 
     }
 
-    private Supplier<NotFoundException> getNotFoundExceptionSupplier(UUID id) {
+    private Supplier<NotFoundException> getNotFoundByIdExceptionSupplier(UUID id) {
         return () -> {
             final String errorMessage = MessageFormat.format("Beer id {0} not found", id);
+            log.error(errorMessage);
+            return new NotFoundException(errorMessage);
+        };
+    }
+
+    private Supplier<NotFoundException> getNotFoundByUpcExceptionSupplier(String upc) {
+        return () -> {
+            final String errorMessage = MessageFormat.format("UPC {0} not found", upc);
             log.error(errorMessage);
             return new NotFoundException(errorMessage);
         };

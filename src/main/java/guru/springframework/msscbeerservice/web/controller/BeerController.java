@@ -63,4 +63,9 @@ public class BeerController {
         return new ResponseEntity(beerService.updateBeer(beerId, beerDto), HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping("/beerUpc/{upc}")
+    public ResponseEntity updateBeerByUpc(@PathVariable String upc, @Valid @RequestBody BeerDto beerDto) {
+        return new ResponseEntity(beerService.updateBeerByUpc(upc, beerDto), HttpStatus.NO_CONTENT);
+    }
+
 }
