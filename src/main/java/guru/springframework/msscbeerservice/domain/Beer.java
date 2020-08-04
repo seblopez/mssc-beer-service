@@ -24,7 +24,7 @@ public class Beer {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "org.hibernate.type.UUIDCharType")
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
     @Version
@@ -41,7 +41,7 @@ public class Beer {
     @Enumerated(EnumType.STRING)
     private BeerStyle beerStyle;
 
-    @Column(unique = true, length = 13, columnDefinition = "varchar")
+    @Column(unique = true, length = 13, columnDefinition = "varchar(13)")
     @Pattern(regexp = "([0-9]){13}")
     private String upc;
 
