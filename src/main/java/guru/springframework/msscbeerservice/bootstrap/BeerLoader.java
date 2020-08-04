@@ -6,6 +6,7 @@ import guru.springframework.msscbeerservice.repository.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-// @Component
+@Component
 public class BeerLoader implements CommandLineRunner {
 
     final private BeerRepository beerRepository;
