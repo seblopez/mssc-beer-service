@@ -37,9 +37,7 @@ public class BrewingServiceImpl implements BrewingService {
             log.debug(MessageFormat.format("Inventory count is {0}", onHandInventory));
 
             if(onHandInventory <= beer.getMinOnHand()) {
-                jmsTemplate.convertAndSend(BREW_REQUEST_QUEUE, BrewBeerEvent.builder()
-                        .beerDto(beerMapper.beerToBeerDto(beer))
-                        .build());
+                jmsTemplate.convertAndSend(BREW_REQUEST_QUEUE, new BrewBeerEvent(beerMapper.beerToBeerDto(beer)));
             }
         });
 
