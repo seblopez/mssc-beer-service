@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 
@@ -24,22 +25,24 @@ public class BrewBeerListener {
     
     private final BeerRepository beerRepository;
     private final JmsTemplate jmsTemplate;
-    
+
+    @Transactional
     @JmsListener(destination = JmsConfig.BREW_REQUEST_QUEUE)
     public void listen(BrewBeerEvent brewBeerEvent) {
         final BeerDto beerDto = brewBeerEvent.getBeerDto();
 
-        final Beer beer = beerRepository.findById(beerDto.getId()).orElseThrow(() -> {
-            final String errorMessage = MessageFormat.format("Beer Id {0} not found!", beerDto.getId());
-            log.error(errorMessage);
-            return new NotFoundException(errorMessage);
-        });
+        final Beer beer = beerRepository.findById(beerDto.getId())
+                .orElseThrow(() -> {
+                    final String errorMessage = MessageFormat.format("Beer Id {0} not found!", beerDto.getId());
+                    log.error(errorMessage);
+                    return new NotFoundException(errorMessage);
+                });
 
         beerDto.setQuantityOnHand(beer.getQuantityToBrew());
 
         NewInventoryEvent newInventoryEvent = new NewInventoryEvent(beerDto);
 
-        log.debug(MessageFormat.format("Brewed beer {0}, QOH: {1}", beer.getMinOnHand(), beerDto.getQuantityOnHand()));
+        log.debug(MessageFormat.format("Brewed beer upc {0} {1}; Min: {2}; QOH: {3}", beer.getUpc(), beer.getBeerName(), beer.getMinOnHand(), beerDto.getQuantityOnHand()));
 
         jmsTemplate.convertAndSend(NEW_INVENTORY_QUEUE, newInventoryEvent);
 

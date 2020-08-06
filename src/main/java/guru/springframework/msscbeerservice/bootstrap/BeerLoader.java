@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,8 +23,6 @@ public class BeerLoader implements CommandLineRunner {
     private static final String BEER_1_UPC = "0631234200036";
     private static final String BEER_2_UPC = "0631234300019";
     private static final String BEER_3_UPC = "0083783375213";
-    private static final String BEER_4_UPC = "0083783373456";
-    private static final String BEER_5_UPC = "0083783373489";
 
     @Override
     public void run(String... args) throws Exception {
@@ -34,6 +33,7 @@ public class BeerLoader implements CommandLineRunner {
         if(beerRepository.count() == 0) {
             List<Beer> beers = Arrays.asList(
                     Beer.builder().beerName("Mango Bobs")
+                            .id(UUID.fromString("0a818933-087d-47f2-ad83-2f986ed087eb"))
                             .beerStyle(BeerStyle.IPA)
                             .quantityToBrew(200)
                             .minOnHand(12)
@@ -41,32 +41,20 @@ public class BeerLoader implements CommandLineRunner {
                             .price(BigDecimal.valueOf(12.95))
                             .build(),
                     Beer.builder().beerName("Galaxy Cat")
+                            .id(UUID.fromString("a712d914-61ea-4623-8bd0-32c0f6545bfd"))
                             .beerStyle(BeerStyle.ALE)
                             .quantityToBrew(200)
                             .minOnHand(12)
                             .upc(BEER_2_UPC)
                             .price(BigDecimal.valueOf(11.95))
                             .build(),
-                    Beer.builder().beerName("Andes Rubia")
-                            .beerStyle(BeerStyle.HONEY)
-                            .quantityToBrew(400)
-                            .minOnHand(12)
+                    Beer.builder().beerName("Pinball Porter")
+                            .id(UUID.fromString("026cc3c8-3a0c-4083-a05b-e908048c1b08"))
+                            .beerStyle(BeerStyle.PORTER)
+                            .quantityToBrew(140)
+                            .minOnHand(30)
                             .upc(BEER_3_UPC)
-                            .price(BigDecimal.valueOf(14.35))
-                            .build(),
-                    Beer.builder().beerName("Corona")
-                            .beerStyle(BeerStyle.PILSENER)
-                            .quantityToBrew(100)
-                            .minOnHand(40)
-                            .upc(BEER_4_UPC)
-                            .price(BigDecimal.valueOf(7.09))
-                            .build(),
-                    Beer.builder().beerName("Rabieta IPA")
-                            .beerStyle(BeerStyle.IPA)
-                            .quantityToBrew(300)
-                            .minOnHand(20)
-                            .upc(BEER_5_UPC)
-                            .price(BigDecimal.valueOf(14.95))
+                            .price(BigDecimal.valueOf(13.95))
                             .build()
             );
 

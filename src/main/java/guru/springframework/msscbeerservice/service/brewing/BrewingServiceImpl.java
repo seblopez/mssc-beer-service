@@ -33,10 +33,11 @@ public class BrewingServiceImpl implements BrewingService {
         beers.forEach(beer -> {
             final Integer onHandInventory = beerInventoryService.getOnHandInventory(beer.getId());
 
-            log.debug(MessageFormat.format("Min On Hand is {0}", beer.getMinOnHand()));
-            log.debug(MessageFormat.format("Inventory count is {0}", onHandInventory));
+            log.debug(MessageFormat.format("Min On Hand for {0} is {1}", beer.getBeerName(), beer.getMinOnHand()));
+            log.debug(MessageFormat.format("Inventory count for {0} is {1}", beer.getBeerName(), onHandInventory));
 
             if(onHandInventory <= beer.getMinOnHand()) {
+                log.debug(MessageFormat.format("Making new addition to inventory for {0}, qty {1}", beer.getBeerName(), beer.getQuantityToBrew()));
                 jmsTemplate.convertAndSend(BREW_REQUEST_QUEUE, new BrewBeerEvent(beerMapper.beerToBeerDto(beer)));
             }
         });
