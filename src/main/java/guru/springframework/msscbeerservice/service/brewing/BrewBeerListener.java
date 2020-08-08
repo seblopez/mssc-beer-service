@@ -22,7 +22,6 @@ import static guru.springframework.msscbeerservice.config.JmsConfig.NEW_INVENTOR
 @RequiredArgsConstructor
 @Service
 public class BrewBeerListener {
-    
     private final BeerRepository beerRepository;
     private final JmsTemplate jmsTemplate;
 
