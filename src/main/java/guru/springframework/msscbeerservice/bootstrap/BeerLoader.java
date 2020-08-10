@@ -60,7 +60,7 @@ public class BeerLoader implements CommandLineRunner {
 
             beerRepository.saveAll(beers);
 
-            log.info(MessageFormat.format("Beers loaded: {0}", beerRepository.count()));
+            log.debug(MessageFormat.format("Beers loaded: {0}", beerRepository.count()));
 
         }
     }

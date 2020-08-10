@@ -36,7 +36,7 @@ public class BeerServiceImpl implements BeerService {
     @Cacheable(cacheNames = "beerCache", key = "#beerId", condition = "#showInventoryOnHand == false")
     @Override
     public BeerDto getBeerById(UUID beerId, Boolean showInventoryOnHand) {
-        log.info("getBeerId is called");
+        log.debug("getBeerId is called");
         final Beer beer = beerRepository.findById(beerId)
                 .orElseThrow(this.getNotFoundByIdExceptionSupplier(beerId));
 
@@ -50,7 +50,7 @@ public class BeerServiceImpl implements BeerService {
     @Cacheable(cacheNames = "beerUpcCache", key = "#upc", condition = "#showInventoryOnHand == false")
     @Override
     public BeerDto getBeerByUpc(String upc, Boolean showInventoryOnHand) {
-        log.info("getBeerByUpc is called");
+        log.debug("getBeerByUpc is called");
         final Beer beer = beerRepository.findByUpc(upc).orElseThrow(this.getNotFoundByUpcExceptionSupplier(upc));
 
         if(showInventoryOnHand) {
@@ -99,7 +99,7 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyleEnum, PageRequest pageRequest, Boolean showInventoryOnHand) {
         final Page<Beer> beerPage;
-        log.info("listBeers is called");
+        log.debug("listBeers is called");
 
         if(!StringUtils.isEmpty(beerName) && !StringUtils.isEmpty(beerStyleEnum)) {
             final BeerStyle beerStyle = beerStyleMapper.beerStyleEnumToBeerStyle(beerStyleEnum);
