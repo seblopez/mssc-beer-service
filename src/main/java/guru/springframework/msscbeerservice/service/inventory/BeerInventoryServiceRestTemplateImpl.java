@@ -2,6 +2,7 @@ package guru.springframework.msscbeerservice.service.inventory;
 
 import guru.springframework.msscbeerservice.service.inventory.model.BeerInventoryDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Profile;
@@ -25,8 +26,12 @@ public class BeerInventoryServiceRestTemplateImpl implements BeerInventoryServic
     private final RestTemplate restTemplate;
     private String beerInventoryServiceHost;
 
-    public BeerInventoryServiceRestTemplateImpl(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplate = restTemplateBuilder.build();
+    public BeerInventoryServiceRestTemplateImpl(RestTemplateBuilder restTemplateBuilder,
+                                                @Value("${sfg.brewery.inventory-user}") String inventoryUser,
+                                                @Value("${sfg.brewery.inventory-password}") String inventoryPassword) {
+        this.restTemplate = restTemplateBuilder
+                .basicAuthentication(inventoryUser, inventoryPassword)
+                .build();
     }
 
     public void setBeerInventoryServiceHost(String beerInventoryServiceHost) {
